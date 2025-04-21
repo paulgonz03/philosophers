@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 typedef struct s_philo
 {
@@ -15,6 +16,7 @@ typedef struct s_philo
     int t_eat;
     int t_sleep;
     int must_eat;
+    long long last_time_eat;
     pthread_mutex_t *fork[2];
 } t_philo;
 

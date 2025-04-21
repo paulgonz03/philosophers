@@ -51,23 +51,37 @@ t_philo *insert_data(int argc, char **argv)
     return(philo);
 }
 
+long long	get_time(void)
+{
+    struct timeval	timev;
+
+    gettimeofday(&timev, NULL);
+    return ((timev.tv_sec * 1000) + (timev.tv_usec / 1000));
+}
 void *philosopher_routine(void *arg)
 {
     t_philo *philo = arg;
-    pthread_mutex_lock(philo->fork[0]);
-    pthread_mutex_lock(philo->fork[1]);
-    printf("philo %d is eating\n", philo->id);
-    usleep(philo->t_eat * 1000);
-    printf("philo %d is sleeping\n", philo->id);
-    usleep(philo->t_sleep * 1000);
-    printf("philo %d is thinking\n", philo->id);
+    while(1)
+    {
+        pthread_mutex_lock(philo->fork[0]);
+        pthread_mutex_lock(philo->fork[1]);
+        printf("philo %d is eating\n", philo->id);
+        usleep(philo->t_eat * 1000);
+        philo->last_time_eat = get_time();
+        pthread_mutex_unlock(philo->fork[0]);
+        pthread_mutex_unlock(philo->fork[1]);
+        printf("philo %d is sleeping\n", philo->id);
+        usleep(philo->t_sleep * 1000);
+        printf("philo %d is thinking\n", philo->id);
+    }
     return(NULL);
 }
+
 
 int main(int argc, char **argv)
 {
     int i = 0;
-
+    long long starting_time = get_time();
     if (!check_arguments(argc, argv))
         return(printf("Error\n"), 0);
     t_philo *philo = insert_data(argc, argv);
@@ -77,5 +91,17 @@ int main(int argc, char **argv)
         pthread_create(&threads[i], NULL, philosopher_routine, (void *)&philo[i]);
         i++;
     }
-    sleep(1);
+    while (1)
+    {
+        i = 0;
+        while(i < atoi(argv[1]))
+        {
+            if(philo[i].last_time_eat - starting_time > philo[i].t_die)
+            {
+                printf("philo %d die\n", philo->id);   
+                return(0);
+            }
+            i++;
+        }
+    }
 }

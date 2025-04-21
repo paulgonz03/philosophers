@@ -34,6 +34,7 @@ t_philo *insert_data(int argc, char **argv)
     pthread_mutex_t *forks = calloc(sizeof(pthread_mutex_t), nbr_philos);
     while(i < nbr_philos)
     {
+        pthread_mutex_init(&forks[i], NULL);
         philo[i].id = i + 1;
         philo[i].t_die = atoi(argv[2]);
         philo[i].t_eat = atoi(argv[3]);

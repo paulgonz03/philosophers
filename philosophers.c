@@ -20,19 +20,47 @@ int check_arguments(int argc, char **argv)
         }
         j++;
     }
+    // if(!atoi(1))
+    // hcaer atoi para parsear los max y mint int 
     return(1);
 }
 
-t_philo insert_data(int argc, char **argv)
+t_philo *insert_data(int argc, char **argv)
 {
-    pthread_mutex_t *forks = ft_calloc(sizeof(pthread_mutex_t), ft_atoi(argv[1]));
+    int i = 0;
+    int nbr_philos = atoi(argv[1]);
 
+    t_philo *philo = calloc(sizeof(t_philo), nbr_philos);
+    pthread_mutex_t *forks = calloc(sizeof(pthread_mutex_t), nbr_philos);
+    while(i < nbr_philos)
+    {
+        philo[i].id = i + 1;
+        philo[i].t_die = atoi(argv[2]);
+        philo[i].t_eat = atoi(argv[3]);
+        philo[i].t_sleep = atoi(argv[4]);
+        if (argc == 6)
+            philo[i].must_eat = atoi(argv[5]);
+        philo[i].fork[0] = &forks[i];
+        if (i == nbr_philos - 1)
+            philo[i].fork[1] = &forks[0];
+        else
+            philo[i].fork[1] = &forks[i + 1];
+        i++;
+    }
+    return(philo);
 }
 
 void *philosopher_routine(void *arg)
 {
-    t_philo *philo_struc = arg;
-    
+    t_philo *philo = arg;
+    pthread_mutex_lock(philo->fork[0]);
+    pthread_mutex_lock(philo->fork[1]);
+    printf("philo %d is eating\n", philo->id);
+    usleep(philo->t_eat * 1000);
+    printf("philo %d is sleeping\n", philo->id);
+    usleep(philo->t_sleep * 1000);
+    printf("philo %d is thinking\n", philo->id);
+    return(NULL);
 }
 
 int main(int argc, char **argv)
@@ -41,17 +69,12 @@ int main(int argc, char **argv)
 
     if (!check_arguments(argc, argv))
         return(printf("Error\n"), 0);
-    t_philo *philo = ft_calloc(sizeof(t_philo), ft_atoi(argv[1]));
-    while(i)
-    {
-        philo[i] = insert_data(argc, argv);
-        i++;
-    }
-    pthread_mutex_t *threads = ft_calloc(sizeof(pthread_t), ft_atoi(argv[1]));
-    while ()
+    t_philo *philo = insert_data(argc, argv);
+    pthread_t *threads = calloc(sizeof(pthread_t), atoi(argv[1]));
+    while(i < atoi(argv[1]))
     {
         pthread_create(&threads[i], NULL, philosopher_routine, (void *)&philo[i]);
-        // inicializar los hilos
+        i++;
     }
-
+    sleep(1);
 }

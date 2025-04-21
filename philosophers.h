@@ -8,17 +8,13 @@
 #include <string.h>
 #include <pthread.h>
 
-#define PHILOS 0
-#define DIE 1
-#define EAT 2
-#define SLEEP 3
-#define MUST_EAT 4
-
-
 typedef struct s_philo
 {
     int id;
-    int number_of[5];
+    int t_die;
+    int t_eat;
+    int t_sleep;
+    int must_eat;
     pthread_mutex_t *fork[2];
 } t_philo;
 

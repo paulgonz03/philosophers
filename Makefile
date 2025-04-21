@@ -1,7 +1,7 @@
 NAME = philosophers
 
-LIBFT_PATH = ./libft
-LIBFT = $(LIBFT_PATH)/libft.a
+# LIBFT_PATH = ./libft
+# LIBFT = $(LIBFT_PATH)/libft.a
 CC = cc
 
 SRC = \
@@ -14,7 +14,7 @@ CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make all -sC ./libft
+	# @make all -sC ./libft
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT)
 
 %.o: %.c 
@@ -22,11 +22,11 @@ $(NAME): $(OBJ)
 
 clean:
 	rm -f $(OBJ)
-	@make clean -sC ./libft
+	# @make clean -sC ./libft
 
 fclean: clean
 	rm -f $(NAME)
-	@make fclean -sC ./libft
+	# @make fclean -sC ./libft
 
 re: fclean all
 

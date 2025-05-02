@@ -16,9 +16,16 @@ typedef struct s_philo
     int t_eat;
     int t_sleep;
     int must_eat;
+    int count_eat;
     long long last_time_eat;
+    long long start_time;
     pthread_mutex_t *fork[2];
 } t_philo;
+
+typedef struct s_time
+{
+    long long start_time;
+} t_time;
 
 int check_arguments(int argc, char **argv);
 

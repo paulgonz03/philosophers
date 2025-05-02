@@ -12,7 +12,7 @@ CFLAGS = -Wall -Wextra -Werror
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 
 %.o: %.c 
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -68,10 +68,12 @@ long long	get_time(void)
 void *philosopher_routine(void *arg)
 {
     t_philo *philo = arg;
+
     while(1)
     {
-        if (philo->count_eat == philo->must_eat)
-            return NULL;
+        if (philo->must_eat)
+            if (philo->count_eat == philo->must_eat)
+                return NULL;
         pthread_mutex_lock(philo->fork[0]);
         printf("%lld ", get_time());
         printf("%d has taken a fork\n", philo->id);

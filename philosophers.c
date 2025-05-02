@@ -75,22 +75,22 @@ void *philosopher_routine(void *arg)
             if (philo->count_eat == philo->must_eat)
                 return NULL;
         pthread_mutex_lock(philo->fork[0]);
-        printf("%lld ", get_time());
+        printf("%lld ", get_time() - philo->start_time);
         printf("%d has taken a fork\n", philo->id);
         pthread_mutex_lock(philo->fork[1]);
-        printf("%lld ", get_time());
+        printf("%lld ", philo->start_time);
         printf("%d has taken a fork\n", philo->id);
-        printf("%lld ", get_time());
+        printf("%lld ", get_time() - philo->start_time);
         printf("%d is eating\n", philo->id);
         usleep(philo->t_eat * 1000);
         philo->last_time_eat = get_time();
         philo->count_eat += 1;
         pthread_mutex_unlock(philo->fork[0]);
         pthread_mutex_unlock(philo->fork[1]);
-        printf("%lld ", get_time());
+        printf("%lld ", get_time() - philo->start_time);
         printf("%d is sleeping\n", philo->id);
         usleep(philo->t_sleep * 1000);
-        printf("%lld ", get_time());
+        printf("%lld ", get_time() - philo->start_time);
         printf("%d is thinking\n", philo->id);
     }
     return(NULL);

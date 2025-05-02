@@ -98,9 +98,8 @@ void *philosopher_routine(void *arg)
 int main(int argc, char **argv)
 {
     int i = 0;
-
-    t_time *time = calloc(sizeof(t_time), 1);
-    time->start_time = get_time();
+    long long start_time;
+    
     if (!check_arguments(argc, argv))
         return(printf("Error check arguments\n"), 0);
     t_philo *philo = init_data(argc, argv);
@@ -109,9 +108,10 @@ int main(int argc, char **argv)
     pthread_t *threads = calloc(sizeof(pthread_t), atoi(argv[1]));
     if (!threads)
         return(printf("Error create threads\n"), 0);
+    start_time = get_time();
     while(i < atoi(argv[1]))
     {
-        philo[i].last_time_eat = time->start_time;
+        philo[i].last_time_eat = start_time;
         if((pthread_create(&threads[i], NULL, philosopher_routine, (void *)&philo[i])) == -1)
             return(printf("Error"), 0);
         i++;

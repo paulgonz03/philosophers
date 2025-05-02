@@ -22,11 +22,6 @@ typedef struct s_philo
     pthread_mutex_t *fork[2];
 } t_philo;
 
-typedef struct s_time
-{
-    long long start_time;
-} t_time;
-
 int check_arguments(int argc, char **argv);
 
 

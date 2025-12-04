@@ -62,7 +62,7 @@ t_philo *init_struct(int argc, char **argv, t_philo *philo)
     philo = malloc(n_philos * sizeof(t_philo));
     if (!philo)
         return (NULL);
-    m_dead = malloc(sizeof(int)); 
+    m_dead = malloc(sizeof(int));
     if (!m_dead)
         return (NULL);
     *m_dead = 0; /* inicializar flag compartida */
@@ -99,8 +99,6 @@ int main(int argc, char **argv)
         return (printf("init_struct error\n"));
     threads = malloc(ft_atoi(argv[1]) * sizeof(pthread_t));
     time = get_time();
-
-    /* inicializar start_time/last_time antes de los prints para evitar basura */
     {
         int n = ft_atoi(argv[1]);
         int k = 0;
@@ -111,13 +109,20 @@ int main(int argc, char **argv)
             k++;
         }
     }
-
-        /* ready: start_time/last_time initialized for all philosophers */
     while (++i < ft_atoi(argv[1]))
     {
         if (pthread_create(&threads[i], NULL, philosopher_routine, (void *)&philo[i]) != 0)
             return (printf("pthread_create error\n"), 0);
     }
     if (!monitor(philo, argv))
+    {
+        i = 0;
+        while (i < ft_atoi(argv[1]))
+        {
+            pthread_join(threads[i], NULL);
+            i++;
+        }
+        free_struct(philo, threads, ft_atoi(argv[1]));
         return (0);
+    }
 }

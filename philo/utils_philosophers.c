@@ -35,18 +35,42 @@ long long get_time(void)
     return ((timev.tv_sec * 1000LL) + (timev.tv_usec / 1000LL));
 }
 
-void free_struct(t_philo *philo)
-{ // FREE ALL THE MUTEXS
+void free_struct(t_philo *philo, pthread_t *threads, int n)
+{
     int i;
+    pthread_mutex_t *forks_base;
 
+    if (!philo)
+        return;
+    forks_base = philo[0].fork[0];
     i = 0;
-    while (i < philo[i].nbr_philo)
+    while (i < n)
     {
         pthread_mutex_destroy(philo[i].fork[0]);
-        pthread_mutex_destroy(philo[i].fork[1]);
-        pthread_mutex_destroy(philo[i].printf);
-        pthread_mutex_destroy(philo[i].finished);
         i++;
     }
+    pthread_mutex_destroy(philo[0].printf);
+    pthread_mutex_destroy(philo[0].finished);
+    free(forks_base);
+    free(philo[0].printf);
+    free(philo[0].finished);
+    free(philo[0].died);
+    free(threads);
     free(philo);
+}
+
+void ft_usleep(long long time)
+{
+    long long time_wait;
+    long long time_finished;
+    long long time_ms;
+
+    time_ms = time / 1000; // paso time a milisegundos
+    time_wait = get_time();
+    time_finished = time_wait + time_ms;
+    while (time_wait < time_finished)
+    {
+        usleep(100);
+        time_wait = get_time();
+    }
 }

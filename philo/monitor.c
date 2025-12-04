@@ -13,7 +13,7 @@ int monitor(t_philo *philo, char **argv)
             if (*(philo[i].died) == 1)
             {
                 pthread_mutex_unlock(philo[i].finished);
-                exit(0);
+                return(0);
             }
             pthread_mutex_unlock(philo[i].finished);
             if (get_time() - philo[i].last_time > philo[i].t_die)
@@ -24,10 +24,10 @@ int monitor(t_philo *philo, char **argv)
                 pthread_mutex_lock(philo[i].printf);
                 printf("%lld %d died\n", get_time() - philo[i].start_time, philo[i].id);
                 pthread_mutex_unlock(philo[i].printf);
-                exit(0);
+                return(0);
             }
         }
-        usleep(1000);
+        ft_usleep(1000);
     }
     return (1);
 }

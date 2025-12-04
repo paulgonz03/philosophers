@@ -8,7 +8,7 @@ void *philosopher_routine(void *arg)
     while (1)
     {
         pthread_mutex_lock(philo->finished);
-        if (*(philo->died)) // comprobar si un philo a muerto (1)
+        if (*(philo->died))
         {
             pthread_mutex_unlock(philo->finished);
             return (NULL);
@@ -20,8 +20,8 @@ void *philosopher_routine(void *arg)
         if (*(philo->died) == 0)
             printf("%lld %d has taken a fork\n", get_time() - philo->start_time, philo->id);
         pthread_mutex_unlock(philo->printf);
-        pthread_mutex_lock(philo->fork[1]);
 
+        pthread_mutex_lock(philo->fork[1]);
         pthread_mutex_lock(philo->printf);
         if (*(philo->died) == 0)
             printf("%lld %d has taken a fork\n", get_time() - philo->start_time, philo->id);
@@ -37,15 +37,14 @@ void *philosopher_routine(void *arg)
         }
         philo->last_time = get_time();
         pthread_mutex_unlock(philo->finished);
-
+        
         pthread_mutex_lock(philo->printf);
         if (*(philo->died) == 0)
             printf("%lld %d is eating\n", get_time() - philo->start_time, philo->id);
         pthread_mutex_unlock(philo->printf);
 
-        usleep(philo->t_eat * 1000);
+        ft_usleep(philo->t_eat * 1000);
 
-        philo->last_time = get_time();
         pthread_mutex_unlock(philo->fork[0]);
         pthread_mutex_unlock(philo->fork[1]);
 
@@ -54,7 +53,7 @@ void *philosopher_routine(void *arg)
             printf("%lld %d is sleeping\n", get_time() - philo->start_time, philo->id);
         pthread_mutex_unlock(philo->printf);
 
-        usleep(philo->t_sleep * 1000);
+        ft_usleep(philo->t_sleep * 1000);
         
         pthread_mutex_lock(philo->printf);
         if (*(philo->died) == 0)

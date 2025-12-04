@@ -55,6 +55,7 @@ void free_struct(t_philo *philo, pthread_t *threads, int n)
     free(philo[0].printf);
     free(philo[0].finished);
     free(philo[0].died);
+    free(philo[0].all_eat);
     free(threads);
     free(philo);
 }

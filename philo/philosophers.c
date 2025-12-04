@@ -57,24 +57,30 @@ t_philo *init_struct(int argc, char **argv, t_philo *philo)
     int i;
     int n_philos;
     int *m_dead;
+    int *m_all_eat;
 
     n_philos = ft_atoi(argv[1]);
     philo = malloc(n_philos * sizeof(t_philo));
     if (!philo)
         return (NULL);
     m_dead = malloc(sizeof(int));
-    if (!m_dead)
+    m_all_eat = malloc(sizeof(int));
+    if (!m_dead || !m_all_eat)
         return (NULL);
-    *m_dead = 0; /* inicializar flag compartida */
+    *m_dead = 0;
+    *m_all_eat = 0;
     i = -1;
     while (++i < n_philos)
     {
         philo[i].id = i + 1;
         philo[i].nbr_philo = n_philos;
         philo[i].died = m_dead;
+        philo[i].all_eat = m_all_eat;
         philo[i].t_die = ft_atoi(argv[2]);
         philo[i].t_eat = ft_atoi(argv[3]);
         philo[i].t_sleep = ft_atoi(argv[4]);
+        philo[i].meals_eaten = 0;  
+        philo[i].must_eat = -1; 
         if (argc == 6)
             philo[i].must_eat = ft_atoi(argv[5]);
     }
@@ -99,18 +105,11 @@ int main(int argc, char **argv)
         return (printf("init_struct error\n"));
     threads = malloc(ft_atoi(argv[1]) * sizeof(pthread_t));
     time = get_time();
-    {
-        int n = ft_atoi(argv[1]);
-        int k = 0;
-        while (k < n)
-        {
-            philo[k].start_time = time;
-            philo[k].last_time = time;
-            k++;
-        }
-    }
+    i = -1;
     while (++i < ft_atoi(argv[1]))
     {
+        philo[i].start_time = time;
+        philo[i].last_time = time;
         if (pthread_create(&threads[i], NULL, philosopher_routine, (void *)&philo[i]) != 0)
             return (printf("pthread_create error\n"), 0);
     }

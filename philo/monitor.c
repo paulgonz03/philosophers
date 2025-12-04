@@ -3,29 +3,48 @@
 int monitor(t_philo *philo, char **argv)
 {
     int i;
-    
+    int n;
+    long long now;
+    long long last;
+    int all_finished;
+
+    n = ft_atoi(argv[1]);
     while (1)
     {
-        i = -1;
-        while (++i < ft_atoi(argv[1]))
+        i = 0;
+        all_finished = 1;
+        while (i < n)
         {
-            pthread_mutex_lock(philo[i].finished); // MIRAR SI HA MUERTO
-            if (*(philo[i].died) == 1)
+            pthread_mutex_lock(philo[i].finished);
+            if (*(philo[i].died))
             {
                 pthread_mutex_unlock(philo[i].finished);
-                return(0);
+                exit(0);
             }
+            if (philo[i].must_eat != -1 && philo[i].meals_eaten < philo[i].must_eat)
+                all_finished = 0; 
+            last = philo[i].last_time;
             pthread_mutex_unlock(philo[i].finished);
-            if (get_time() - philo[i].last_time > philo[i].t_die)
+            now = get_time();
+            if (now - last > philo[i].t_die)
             {
                 pthread_mutex_lock(philo[i].finished);
                 *(philo[i].died) = 1;
                 pthread_mutex_unlock(philo[i].finished);
                 pthread_mutex_lock(philo[i].printf);
                 printf("%lld %d died\n", get_time() - philo[i].start_time, philo[i].id);
+                fflush(stdout);
                 pthread_mutex_unlock(philo[i].printf);
-                return(0);
+                exit(1);
             }
+            i++;
+        }
+        if (all_finished && philo[0].must_eat != -1)
+        {
+            pthread_mutex_lock(philo[0].finished);
+            *(philo[0].all_eat) = 1;
+            pthread_mutex_unlock(philo[0].finished);
+            return (0);
         }
         ft_usleep(1000);
     }

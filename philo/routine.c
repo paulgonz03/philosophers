@@ -66,6 +66,11 @@ void *philosopher_routine(void *arg)
     philo = arg;
     while (1)
     {
+        // bloquear y desbloquear mutex
+        pthread_mutex_lock(philo->finished);
+        pthread_mutex_unlock(philo->finished);
+        if (philo->nbr_philo%2 == 0) // gestionar los pares para que los pares coman a la vez y los impares a la vez
+            usleep(200);
         pthread_mutex_lock(philo->finished);
         if (*(philo->died) || *(philo->all_eat))
         {

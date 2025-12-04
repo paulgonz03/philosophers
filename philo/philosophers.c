@@ -79,8 +79,8 @@ t_philo *init_struct(int argc, char **argv, t_philo *philo)
         philo[i].t_die = ft_atoi(argv[2]);
         philo[i].t_eat = ft_atoi(argv[3]);
         philo[i].t_sleep = ft_atoi(argv[4]);
-        philo[i].meals_eaten = 0;  
-        philo[i].must_eat = -1; 
+        philo[i].meals_eaten = 0;
+        philo[i].must_eat = -1;
         if (argc == 6)
             philo[i].must_eat = ft_atoi(argv[5]);
     }
@@ -106,6 +106,7 @@ int main(int argc, char **argv)
     threads = malloc(ft_atoi(argv[1]) * sizeof(pthread_t));
     time = get_time();
     i = -1;
+    pthread_mutex_lock(philo[0].finished);
     while (++i < ft_atoi(argv[1]))
     {
         philo[i].start_time = time;
@@ -113,14 +114,12 @@ int main(int argc, char **argv)
         if (pthread_create(&threads[i], NULL, philosopher_routine, (void *)&philo[i]) != 0)
             return (printf("pthread_create error\n"), 0);
     }
+    pthread_mutex_unlock(philo[0].finished);
     if (!monitor(philo, argv))
     {
-        i = 0;
-        while (i < ft_atoi(argv[1]))
-        {
+        i = -1;
+        while (++i < ft_atoi(argv[1]))
             pthread_join(threads[i], NULL);
-            i++;
-        }
         free_struct(philo, threads, ft_atoi(argv[1]));
         return (0);
     }

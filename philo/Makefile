@@ -7,7 +7,7 @@ SRC = \
 
 OBJ = ${SRC:%.c=objects/%.o}
 
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 
 all: $(NAME)
 

@@ -43,12 +43,9 @@ void free_struct(t_philo *philo, pthread_t *threads, int n)
     if (!philo)
         return;
     forks_base = philo[0].fork[0];
-    i = 0;
-    while (i < n)
-    {
+    i = -1;
+    while (++i < n)
         pthread_mutex_destroy(philo[i].fork[0]);
-        i++;
-    }
     pthread_mutex_destroy(philo[0].printf);
     pthread_mutex_destroy(philo[0].finished);
     free(forks_base);
@@ -71,7 +68,7 @@ void ft_usleep(long long time)
     time_finished = time_wait + time_ms;
     while (time_wait < time_finished)
     {
-        usleep(100);
+        usleep(50);
         time_wait = get_time();
     }
 }

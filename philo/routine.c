@@ -62,22 +62,20 @@ void thinking_routine(t_philo *philo)
 void *philosopher_routine(void *arg)
 {
     t_philo *philo;
+    int should_stop;
 
     philo = arg;
+    pthread_mutex_lock(philo->finished);
+    pthread_mutex_unlock(philo->finished);
+    if (philo->id % 2 == 0)
+        ft_usleep(1000);
     while (1)
     {
-        // bloquear y desbloquear mutex
         pthread_mutex_lock(philo->finished);
+        should_stop = *(philo->died) || *(philo->all_eat);
         pthread_mutex_unlock(philo->finished);
-        if (philo->nbr_philo%2 == 0) // gestionar los pares para que los pares coman a la vez y los impares a la vez
-            usleep(200);
-        pthread_mutex_lock(philo->finished);
-        if (*(philo->died) || *(philo->all_eat))
-        {
-            pthread_mutex_unlock(philo->finished);
+        if (should_stop)
             return (NULL);
-        }
-        pthread_mutex_unlock(philo->finished);
         if (!forks_routine(philo))
             return (NULL);
         sleep_routine(philo);

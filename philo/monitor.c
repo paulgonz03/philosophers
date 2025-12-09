@@ -1,12 +1,13 @@
 #include "philosophers.h"
 
-int monitor(t_philo *philo, char **argv)
+int	monitor(t_philo *philo, char **argv)
 {
-    int i;
-    int n;
-    long long now;
-    long long last;
-    int all_finished;
+    int			i;
+    int			n;
+    long long	now;
+    long long	last;
+    int			all_finished;
+    int			t_die;
 
     n = ft_atoi(argv[1]);
     while (1)
@@ -19,23 +20,25 @@ int monitor(t_philo *philo, char **argv)
             if (*(philo[i].died))
             {
                 pthread_mutex_unlock(philo[i].finished);
-                exit(0);
+                return (0);
             }
-            if (philo[i].must_eat != -1 && philo[i].meals_eaten < philo[i].must_eat)
-                all_finished = 0; 
+            if (philo[i].must_eat != -1
+                && philo[i].meals_eaten < philo[i].must_eat)
+                all_finished = 0;
             last = philo[i].last_time;
+            t_die = philo[i].t_die;
             pthread_mutex_unlock(philo[i].finished);
             now = get_time();
-            if (now - last > philo[i].t_die)
+            if (now - last >= t_die)
             {
                 pthread_mutex_lock(philo[i].finished);
                 *(philo[i].died) = 1;
                 pthread_mutex_unlock(philo[i].finished);
                 pthread_mutex_lock(philo[i].printf);
-                printf("%lld %d died\n", get_time() - philo[i].start_time, philo[i].id);
-                fflush(stdout);
+                printf("%lld %d died\n", now - philo[i].start_time,
+                    philo[i].id);
                 pthread_mutex_unlock(philo[i].printf);
-                exit(1);
+                return (1);
             }
             i++;
         }
@@ -46,7 +49,7 @@ int monitor(t_philo *philo, char **argv)
             pthread_mutex_unlock(philo[0].finished);
             return (0);
         }
-        ft_usleep(1000);
+        usleep(500);
     }
     return (1);
 }

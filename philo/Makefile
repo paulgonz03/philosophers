@@ -3,7 +3,7 @@ NAME = philosophers
 CC = cc
 
 SRC = \
-	philosophers.c utils_philosophers.c monitor.c routine.c\
+	philosophers.c utils_philosophers.c monitor.c routine.c ft_printf.c\
 
 OBJ = ${SRC:%.c=objects/%.o}
 

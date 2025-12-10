@@ -45,4 +45,6 @@ void				*philosopher_routine(void *arg);
 // MONITOR.C
 int					monitor(t_philo *philo, char **argv);
 
+void ft_printf(t_philo *philo, char *message);
+
 #endif

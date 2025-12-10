@@ -2,16 +2,7 @@
 
 int meel_routine(t_philo *philo)
 {
-    int died;
-
-    pthread_mutex_lock(philo->finished);
-    died = *(philo->died);
-    pthread_mutex_unlock(philo->finished);
-    if (died)
-        return (0);
-    pthread_mutex_lock(philo->printf);
-    printf("%lld %d is eating\n", get_time() - philo->start_time, philo->id);
-    pthread_mutex_unlock(philo->printf);
+    ft_printf(philo, "is eating");
     pthread_mutex_lock(philo->finished);
     philo->last_time = get_time();
     philo->meals_eaten++;
@@ -21,7 +12,7 @@ int meel_routine(t_philo *philo)
     return (1);
 }
 
-int try_lock_with_check(pthread_mutex_t *mutex, t_philo *philo)
+int try_lock_with_check(pthread_mutex_t *mutex, t_philo *philo) // bloquea el hilo hasta que llega el mutex
 {
     int died;
     
@@ -43,7 +34,7 @@ int forks_routine(t_philo *philo)
     pthread_mutex_t *first_fork;
     pthread_mutex_t *second_fork;
 
-    if (philo->fork[0] < philo->fork[1])
+    if (philo->fork[0] < philo->fork[1]) // filosofos cogen el tenedor de la izq al principio
     {
         first_fork = philo->fork[0];
         second_fork = philo->fork[1];
@@ -56,19 +47,8 @@ int forks_routine(t_philo *philo)
 
     if (!try_lock_with_check(first_fork, philo))
         return (0);
-    
-    pthread_mutex_lock(philo->finished);
-    died = *(philo->died);
-    pthread_mutex_unlock(philo->finished);
-    if (died)
-    {
-        pthread_mutex_unlock(first_fork);
-        return (0);
-    }
-    pthread_mutex_lock(philo->printf);
-    printf("%lld %d has taken a fork\n", get_time() - philo->start_time,
-           philo->id);
-    pthread_mutex_unlock(philo->printf);
+
+    ft_printf(philo, "has taken a fork");
 
     if (!try_lock_with_check(second_fork, philo))
     {
@@ -84,10 +64,8 @@ int forks_routine(t_philo *philo)
         pthread_mutex_unlock(first_fork);
         return (0);
     }
-    pthread_mutex_lock(philo->printf);
-    printf("%lld %d has taken a fork\n", get_time() - philo->start_time,
-           philo->id);
-    pthread_mutex_unlock(philo->printf);
+
+    ft_printf(philo, "has taken a fork");
 
     if (!meel_routine(philo))
     {
@@ -100,34 +78,14 @@ int forks_routine(t_philo *philo)
     return (1);
 }
 
-void sleep_routine(t_philo *philo)
+void sleep_thinking_routine(t_philo *philo)
 {
-    int died;
-
-    pthread_mutex_lock(philo->finished);
-    died = *(philo->died);
-    pthread_mutex_unlock(philo->finished);
-    pthread_mutex_lock(philo->printf);
-    if (!died)
-        printf("%lld %d is sleeping\n", get_time() - philo->start_time,
-               philo->id);
-    pthread_mutex_unlock(philo->printf);
+    ft_printf(philo, "is sleeping");
     ft_usleep(philo->t_sleep * 1000, philo);
+    ft_printf(philo, "is thinking");
+
 }
 
-void thinking_routine(t_philo *philo)
-{
-    int died;
-
-    pthread_mutex_lock(philo->finished);
-    died = *(philo->died);
-    pthread_mutex_unlock(philo->finished);
-    pthread_mutex_lock(philo->printf);
-    if (!died)
-        printf("%lld %d is thinking\n", get_time() - philo->start_time,
-               philo->id);
-    pthread_mutex_unlock(philo->printf);
-}
 
 void *philosopher_routine(void *arg)
 {
@@ -148,15 +106,7 @@ void *philosopher_routine(void *arg)
             return (NULL);
         if (!forks_routine(philo))
             return (NULL);
-        pthread_mutex_lock(philo->finished);
-        if (*(philo->died) || *(philo->all_eat))
-        {
-            pthread_mutex_unlock(philo->finished);
-            return (NULL);
-        }
-        pthread_mutex_unlock(philo->finished);
-        sleep_routine(philo);
-        thinking_routine(philo);
+        sleep_thinking_routine(philo);
         if (philo->nbr_philo % 2 == 1)
             usleep(1000);
     }

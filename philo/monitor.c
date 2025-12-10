@@ -1,13 +1,13 @@
 #include "philosophers.h"
 
-int	monitor(t_philo *philo, char **argv)
+int monitor(t_philo *philo, char **argv)
 {
-    int			i;
-    int			n;
-    long long	now;
-    long long	last;
-    int			all_finished;
-    int			t_die;
+    int i;
+    int n;
+    long long now;
+    long long last;
+    int all_finished;
+    int t_die;
 
     n = ft_atoi(argv[1]);
     while (1)
@@ -22,8 +22,7 @@ int	monitor(t_philo *philo, char **argv)
                 pthread_mutex_unlock(philo[i].finished);
                 return (0);
             }
-            if (philo[i].must_eat != -1
-                && philo[i].meals_eaten < philo[i].must_eat)
+            if (philo[i].must_eat != -1 && philo[i].meals_eaten < philo[i].must_eat)
                 all_finished = 0;
             last = philo[i].last_time;
             t_die = philo[i].t_die;
@@ -34,10 +33,7 @@ int	monitor(t_philo *philo, char **argv)
                 pthread_mutex_lock(philo[i].finished);
                 *(philo[i].died) = 1;
                 pthread_mutex_unlock(philo[i].finished);
-                pthread_mutex_lock(philo[i].printf);
-                printf("%lld %d died\n", now - philo[i].start_time,
-                    philo[i].id);
-                pthread_mutex_unlock(philo[i].printf);
+                ft_printf(philo, "died");
                 return (1);
             }
             i++;

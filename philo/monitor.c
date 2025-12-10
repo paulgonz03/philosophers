@@ -45,7 +45,6 @@ int monitor(t_philo *philo, char **argv)
             pthread_mutex_unlock(philo[0].finished);
             return (0);
         }
-        usleep(500);
     }
     return (1);
 }

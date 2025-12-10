@@ -95,7 +95,7 @@ void *philosopher_routine(void *arg)
     pthread_mutex_lock(philo->finished);
     pthread_mutex_unlock(philo->finished);
     if (philo->id % 2 == 0)
-        usleep(1700);
+        ft_usleep(200, philo);
     while (1)
     {
         if (!forks_routine(philo))

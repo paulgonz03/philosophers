@@ -37,7 +37,7 @@ int					main(int argc, char **argv);
 int					ft_atoi(char *str);
 long long			get_time(void);
 void				free_struct(t_philo *philo, pthread_t *threads, int n);
-void					ft_usleep(long long time);
+void					ft_usleep(long long time,t_philo *philo);
 
 // ROUTINE.C
 void				*philosopher_routine(void *arg);

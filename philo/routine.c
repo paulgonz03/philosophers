@@ -13,14 +13,14 @@ void forks_routine(t_philo *philo)
     philo->last_time = get_time();
     philo->meals_eaten++;
     pthread_mutex_unlock(philo->finished);
-    ft_usleep(philo->t_eat);
+    ft_usleep(philo->t_eat, philo);
 
     pthread_mutex_unlock(philo->fork[0]);
     pthread_mutex_unlock(philo->fork[1]);
 
 
     ft_printf(philo, "is sleeping");
-    ft_usleep(philo->t_sleep);
+    ft_usleep(philo->t_sleep, philo);
     ft_printf(philo, "is thinking");
 }
 
@@ -32,7 +32,7 @@ void *philosopher_routine(void *arg)
     pthread_mutex_lock(philo->finished);
     pthread_mutex_unlock(philo->finished);
     if (philo->id % 2 == 0)
-        ft_usleep(1700);
+        ft_usleep(300, philo);
     while (1)
     {
         pthread_mutex_lock(philo->finished);

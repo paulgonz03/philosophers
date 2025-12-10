@@ -57,18 +57,24 @@ void free_struct(t_philo *philo, pthread_t *threads, int n)
 	free(philo);
 }
 
-void ft_usleep(long long time)
+void	ft_usleep(long long time, t_philo *philo)
 {
-	long long time_wait;
-	long long time_finished;
+    long long	time_wait;
+    long long	time_finished;
+    int			died;
 
-	time_wait = get_time();
-	time_finished = time_wait + time;
-	while (time_wait < time_finished)
-	{
-		time_wait = get_time();
-		usleep(100);
-	}
+    time_wait = get_time();
+    time_finished = time_wait;
+    while (time_wait < time_finished)
+    {
+        time_wait = get_time();
+        pthread_mutex_lock(philo->finished);
+        died = *(philo->died);
+        pthread_mutex_unlock(philo->finished);
+        if (died)
+            return ;
+        usleep(50);
+    }
 }
 
 void ft_printf(t_philo *philo, char *message)

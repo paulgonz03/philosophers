@@ -17,24 +17,25 @@ int monitor(t_philo *philo, char **argv)
         while (i < n)
         {
             pthread_mutex_lock(philo[i].finished);
-            if (*(philo[i].died))
+            if (*(philo[i].died)) // ya ha muerto un philo
             {
                 pthread_mutex_unlock(philo[i].finished);
-                return (0);
+                return (1);
             }
             if (philo[i].must_eat != -1 && philo[i].meals_eaten < philo[i].must_eat)
                 all_finished = 0;
             last = philo[i].last_time;
             t_die = philo[i].t_die;
             pthread_mutex_unlock(philo[i].finished);
+
             now = get_time();
-            if (now - last >= t_die)
+            if (now - last >= t_die) // muere un philo
             {
                 ft_printf(&philo[i], "died");
                 pthread_mutex_lock(philo[i].finished);
                 *(philo[i].died) = 1;
                 pthread_mutex_unlock(philo[i].finished);
-                return (1);
+                return (0);
             }
             i++;
         }
@@ -43,8 +44,7 @@ int monitor(t_philo *philo, char **argv)
             pthread_mutex_lock(philo[0].finished);
             *(philo[0].all_eat) = 1;
             pthread_mutex_unlock(philo[0].finished);
-            return (0);
+            return (1);
         }
     }
-    return (1);
 }

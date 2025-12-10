@@ -1,9 +1,9 @@
 #include "philosophers.h"
 
-int	ft_atoi(char *str)
+int ft_atoi(char *str)
 {
-	long	res;
-	int		sign;
+	long res;
+	int sign;
 
 	sign = 1;
 	res = 0;
@@ -27,21 +27,21 @@ int	ft_atoi(char *str)
 	return ((int)(res * sign));
 }
 
-long long	get_time(void)
+long long get_time(void)
 {
-	struct timeval	timev;
+	struct timeval timev;
 
 	gettimeofday(&timev, NULL);
 	return ((timev.tv_sec * 1000LL) + (timev.tv_usec / 1000LL));
 }
 
-void	free_struct(t_philo *philo, pthread_t *threads, int n)
+void free_struct(t_philo *philo, pthread_t *threads, int n)
 {
-	int				i;
-	pthread_mutex_t	*forks_base;
+	int i;
+	pthread_mutex_t *forks_base;
 
 	if (!philo)
-		return ;
+		return;
 	forks_base = philo[0].fork[0];
 	i = -1;
 	while (++i < n)
@@ -57,25 +57,26 @@ void	free_struct(t_philo *philo, pthread_t *threads, int n)
 	free(philo);
 }
 
-int	ft_usleep(long long time, t_philo *philo)
+void ft_usleep(long long time)
 {
-    long long	time_wait;
-    long long	time_finished;
-    long long	time_ms;
-    int			died;
+	long long time_wait;
+	long long time_finished;
 
-    time_ms = time / 1000;
-    time_wait = get_time();
-    time_finished = time_wait + time_ms;
-    while (time_wait < time_finished)
-    {
-        pthread_mutex_lock(philo->finished);
-        died = *(philo->died);
-        pthread_mutex_unlock(philo->finished);
-        if (died)
-            return (0);
-        usleep(50);
-        time_wait = get_time();
-    }
-    return (1);
+	time_wait = get_time();
+	time_finished = time_wait + time;
+	while (time_wait < time_finished)
+	{
+		time_wait = get_time();
+		usleep(100);
+	}
+}
+
+void ft_printf(t_philo *philo, char *message)
+{
+	pthread_mutex_lock(philo->finished);
+	pthread_mutex_lock(philo->printf);
+	if (*philo->died == 0)
+		printf("%lld %d %s\n", get_time() - philo->start_time, philo->id, message);
+	pthread_mutex_unlock(philo->printf);
+	pthread_mutex_unlock(philo->finished);
 }

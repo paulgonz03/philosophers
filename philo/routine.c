@@ -90,25 +90,17 @@ void sleep_thinking_routine(t_philo *philo)
 void *philosopher_routine(void *arg)
 {
     t_philo *philo;
-    int should_stop;
 
     philo = arg;
     pthread_mutex_lock(philo->finished);
     pthread_mutex_unlock(philo->finished);
     if (philo->id % 2 == 0)
-        usleep(1000);
+        usleep(1700);
     while (1)
     {
-        pthread_mutex_lock(philo->finished);
-        should_stop = *(philo->died) || *(philo->all_eat);
-        pthread_mutex_unlock(philo->finished);
-        if (should_stop)
-            return (NULL);
         if (!forks_routine(philo))
             return (NULL);
         sleep_thinking_routine(philo);
-        if (philo->nbr_philo % 2 == 1)
-            usleep(1000);
     }
     return (NULL);
 }

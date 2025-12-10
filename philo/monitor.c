@@ -30,10 +30,10 @@ int monitor(t_philo *philo, char **argv)
             now = get_time();
             if (now - last >= t_die)
             {
+                ft_printf(philo, "died");
                 pthread_mutex_lock(philo[i].finished);
                 *(philo[i].died) = 1;
                 pthread_mutex_unlock(philo[i].finished);
-                ft_printf(philo, "died");
                 return (1);
             }
             i++;

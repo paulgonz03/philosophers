@@ -18,10 +18,17 @@ void forks_routine(t_philo *philo)
     pthread_mutex_unlock(philo->fork[0]);
     pthread_mutex_unlock(philo->fork[1]);
 
-
     ft_printf(philo, "is sleeping");
     ft_usleep(philo->t_sleep, philo);
     ft_printf(philo, "is thinking");
+}
+
+void only_one_philo(t_philo *philo)
+{
+    pthread_mutex_lock(philo->fork[0]);
+    ft_printf(philo, "has taken a fork");
+    ft_usleep(philo->t_die, philo);
+    pthread_mutex_unlock(philo->fork[0]);
 }
 
 void *philosopher_routine(void *arg)
@@ -29,10 +36,15 @@ void *philosopher_routine(void *arg)
     t_philo *philo;
 
     philo = arg;
+    if (philo->nbr_philo == 1)
+    {
+        only_one_philo(philo);
+        return (NULL);
+    }
     pthread_mutex_lock(philo->finished);
     pthread_mutex_unlock(philo->finished);
     if (philo->id % 2 == 0)
-        ft_usleep(300, philo);
+        ft_usleep(200, philo);
     while (1)
     {
         pthread_mutex_lock(philo->finished);

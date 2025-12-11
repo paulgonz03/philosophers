@@ -64,7 +64,7 @@ void	ft_usleep(long long time, t_philo *philo)
     int			died;
 
     time_wait = get_time();
-    time_finished = time_wait;
+    time_finished = time_wait + time;
     while (time_wait < time_finished)
     {
         time_wait = get_time();

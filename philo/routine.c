@@ -1,5 +1,30 @@
 #include "philosophers.h"
 
+void	thinking_routine(t_philo *philo)
+{
+	pthread_mutex_lock(philo->finished);
+	if (*(philo->died) || *(philo->all_eat))
+	{
+		pthread_mutex_unlock(philo->finished);
+		return ;
+	}
+	pthread_mutex_unlock(philo->finished);
+	ft_printf(philo, "is thinking");
+}
+
+void	sleep_routine(t_philo *philo)
+{
+	pthread_mutex_lock(philo->finished);
+	if (*(philo->died) || *(philo->all_eat))
+	{
+		pthread_mutex_unlock(philo->finished);
+		return ;
+	}
+	pthread_mutex_unlock(philo->finished);
+	ft_printf(philo, "is sleeping");
+	ft_usleep(philo->t_sleep, philo);
+}
+
 void	forks_routine(t_philo *philo)
 {
 	pthread_mutex_lock(philo->fork[0]);
@@ -14,9 +39,8 @@ void	forks_routine(t_philo *philo)
 	ft_usleep(philo->t_eat, philo);
 	pthread_mutex_unlock(philo->fork[0]);
 	pthread_mutex_unlock(philo->fork[1]);
-	ft_printf(philo, "is sleeping");
-	ft_usleep(philo->t_sleep, philo);
-	ft_printf(philo, "is thinking");
+	sleep_routine(philo);
+	thinking_routine(philo);
 }
 
 void	only_one_philo(t_philo *philo)
@@ -40,7 +64,7 @@ void	*philosopher_routine(void *arg)
 	pthread_mutex_lock(philo->finished);
 	pthread_mutex_unlock(philo->finished);
 	if (philo->id % 2 == 0)
-		ft_usleep(200, philo);
+		ft_usleep(100, philo);
 	while (1)
 	{
 		pthread_mutex_lock(philo->finished);
